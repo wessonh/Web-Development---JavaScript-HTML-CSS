@@ -1,0 +1,139 @@
+<!--
+Henry Wesson 
+SD 230
+10/12/2023
+Project 1 - Question 2   
+
+This is my currency converter program. I combined both programs into one with a switch case to let you choose functionality. I hope this okay, I liked the idea of having it as one program with multiple features rather than two
+separate ones. It makes it more convienient for the user to be able to search the code and convert currency in the same window. You can look up a enter the currency codes (case insensitive) and value to convert and it will display the
+conversion in the window. You can also search currency codes. You can enter even a partial string that is included in the code or code name and it will list all possible codes. You also have an option to exit the program. 
+-->
+
+<!DOCTYPE html> <!-- start of program-->
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width">
+    <title>Henry's Currency Converter</title>
+</head>
+<body>
+    <h1>Henry's Currency Converter</h1>
+
+    <script> // start script
+
+        const exchangeRates = // object for exchange rates
+        {
+            "base": "USD",
+            "rates": {
+
+                "AUD": 1.531863,
+                "CAD": 1.36029,
+                "CLP": 950.662057,
+                "CNY": 7.128404,
+                "EUR": 1.03203,
+                "GBP": 0.920938,
+                "INR": 81.255504,
+                "JPY": 143.376504,
+                "RUB": 57.875038,
+                "ZAR": 17.92624
+            }
+        };
+
+        const currencyCode = // object for currency codes
+        {
+            "AUD": "Australian Dollar",
+            "CAD": "Canadian Dollar",
+            "CLP": "Chilean Peso",
+            "CNY": "Chinese Yuan",
+            "EUR": "Euro",
+            "GBP": "British Pound Sterling",
+            "INR": "Indian Rupee",
+            "JPY": "Japanese Yen",
+            "RUB": "Russian Ruble",
+            "USD": "United States Dollar",
+            "ZAR": "South African Rand"
+        };
+
+        alert("Welcome to Henry's Currency Converter!\n\nWith this program you can perform currency conversions and search for currency codes. Press OK to continue."); // alert to introduce the program upon startup
+
+        let quit = false; // sets quit to false
+
+        while (!quit) { // while loop when quit is false. makes sure the program continues after processes complete unless the user wants to quit
+            const choice = prompt("Please press: 1 - Currency Conversion, 2 - Currency Code Lookup, 3 - Quit");
+
+            if (choice === null) { // if else to let the cancel button on the prompt window work
+                quit = true; // if choice is null quit is true
+
+            } else { // otherwise
+                switch (choice) { // a switch case menu that displays and gives user choices 
+                    case "1": // convert. prompts the user to enter a base currency, target currency, and conversion value, then calls converter function
+                        const inputBase = prompt("Please enter the currency code of the base currency:"); 
+                        const inputTarget = prompt("Please enter the currency code of the target currency:"); 
+                        const conversionValue = parseFloat(prompt("How much would you like to convert?:"));  // uses parseFloat to convert to non decimal to decimal
+                        converter(inputBase, inputTarget, conversionValue); // calls converter function
+                        break;
+
+                    case "2": // search 
+                        const search = prompt("Please lookup a currency code (can be part of code or country and will display possible results):"); // prompts the user for a currency code to search, can be partial string from code name or code itself
+                        const searchResults = searchCode(search); 
+                        alert(JSON.stringify(searchResults, null, 2)); // alerts the user by displaying the search results from exchangeRate object as a JSON string
+                        break;
+
+                    case "3": 
+                        quit = true; // sets quit to true to exit program
+                        break;
+
+                    default: // otherwise error
+                        alert("Please press a valid key."); // gives user error alert is invliad command is entered
+                        break;
+                }
+            }
+        } // end while
+
+        function converter( base, target, amount ) { // this function converts a choosen amount from base to target currency 
+            base = base.trim().toUpperCase(); // converts base currency to uppercase and trims trailing blank spaces and lines
+            target = target.trim().toUpperCase(); // converts target currency to uppercase and trims trailing blank spaces and lines
+
+            if (base === "USD" && exchangeRates.rates.hasOwnProperty(target)) { // if the base currency is USD and exchangeRates is an option from exchangeRates
+                const convertedAmount = amount / exchangeRates.rates[target]; // convertedAmount equals amount divided by exchange rate for target currency
+                alert(`${amount} ${base} is equal to ${convertedAmount.toFixed(2)} ${target}`); // gives user alert to display the conversion. rounds to 2 decimals
+
+            } else if (target === "USD" && exchangeRates.rates.hasOwnProperty(base)) { // else if the target currency is USD and the base currency is an option from exchange rates 
+                const convertedAmount = amount * exchangeRates.rates[base]; // convertedAmount equals amount multiplied by exchange rate for base currency
+                alert(`${amount} ${base} is equal to ${convertedAmount.toFixed(2)} ${target}`); // gives user alert to display the conversion. rounds to 2 decimals
+
+            } else if (exchangeRates.rates.hasOwnProperty(base) && exchangeRates.rates.hasOwnProperty(target)) { // else if both base currency and target currency are options from exchangeRates 
+                const convertedAmount = (amount * exchangeRates.rates[target]) / exchangeRates.rates[base]; // convertedAmount equals amount times exchange rate of target currency divided by exchange rate of base currency
+                alert(`${amount} ${base} is equal to ${convertedAmount.toFixed(2)} ${target}`); // gives user alert to display the conversion. rounds to 2 decimals 
+
+            } else { // otherwise gives user an error alert for invalid input
+                alert("Error! Please enter a valid currency code or amount.");
+            }
+        }
+
+        function searchCode(search) { // this function is to search for a currency code
+            const letterChecker = /^[a-zA-Z]+$/; // regex for seeing if input is letters only
+
+            if (!letterChecker.test(search)) { // if search has non-letter characters
+                alert("Error! Please use letter characters only!"); // error alert for the user
+                return {};
+            }
+            
+            search = search.toLowerCase(); // sets search string to lower case to make case-insensitive
+            const matchingCode = {}; // matchingCode set to empty object
+
+            for (const code in currencyCode) { // for each code in currency code
+                const codeName = currencyCode[code].toLowerCase(); // sets codeName to lower case
+
+                if (codeName.includes(search) || code.toLowerCase().includes(search)) { // if the code name includes searched partial string or if the code contains the partial string
+                    matchingCode[code] = currencyCode[code]; // matchingCode and its name is set to currencyCode and its name
+                    
+                }
+                
+            }
+            return matchingCode;  // returns the matching code     
+        }
+    // end script       
+    </script> 
+</body>
+</html> <!-- end program-->
