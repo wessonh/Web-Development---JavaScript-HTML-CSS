@@ -1,0 +1,101 @@
+<!-- 
+Henry Wesson
+SD 230
+10/2/2023
+Project 1 - Program 1
+
+This program that uses javaScript and HTML to simulate a rock, paper, scissors game. The user will paly against a computer opponent
+till they win or loose two out three games. If they draw three times the game will be a tie. The program has a short intro and will ask the user
+ to play again after the game is over. WOuld it be better to have a seperate HTML file and Script file or is it okay to combine this one?
+-->
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Rock, Paper, Scissors Game</title>
+</head>
+<body>
+    <script> // start of script 
+        
+        let newGame = true; // sets newgame to true
+        let nextGame = false;
+        while (newGame) { // while to run game
+
+            if (!nextGame) { // if statement to only display intro on first playthough
+                alert("Hello!\n\n This game simulates playing Rock, Paper, Scissors. Type your choice into the window and play the computer best two out of three rounds! ") // intro message for the user
+                nextGame = true;
+            }
+
+            let playerScore = 0; // sets score to 0 initially
+            let compScore = 0;
+            let draws = 0;  
+
+            while (playerScore < 2 && compScore < 2 && draws < 3) { // Best 2 out of three. While both players scores are below 2 and draws below 3
+            
+                function playGame(playerChoice, compChoice) { // this function plays the game
+
+                    const ruleSet = { // lets you assign what choice beats what here
+                        rock: 'scissors',
+                        paper: 'rock',
+                        scissors: 'paper'
+                    };
+
+                    if (playerChoice === compChoice) { // if both players pick the same, draw
+                        return "Draw!";
+
+                    } else if (ruleSet[playerChoice] === compChoice) { // The user wins
+                        return "You win!";
+
+                    } else { // otherwise you loose
+                    return "You lose, Computer wins!";
+                    }
+                } // end function playGame
+               
+                const yourChoice = prompt("Please type 'rock', 'paper', or 'scissors':").toLowerCase(); // prompt for user choice. case insensitive
+        
+                if (yourChoice !== "rock" && yourChoice !== "paper" && yourChoice !== "scissors") { // if choice invalid
+                    alert("Error! Please enter a valid choice!"); //error message
+
+                } else { // valid choice
+                    const compChoice = getCompChoice();
+                    const winner = playGame(yourChoice, compChoice);
+                    alert(`You picked ${yourChoice}! \nComputer picked ${compChoice}! \n${winner}`); // alert dispalys both players choices and winner 
+                    
+                    if (winner === "You win!") { // if else statment to add to scores depending on who won or draw
+                        playerScore++;
+
+                    } else if (winner === "You lose, Computer wins!") {
+                        compScore++;
+
+                    } else if (winner === "Draw!") {
+                        draws++;
+                    }
+                }
+            }
+
+            if (playerScore === 2) { // if else statment for who won best two out of three
+                alert("You won best two out of three! Humanity is victorious!");
+
+            } else if (compScore === 2) {
+                alert("Pitiful human! Computer wins best to out of 3!");
+
+            } else if (draws === 3) {
+                alert("It's a tie!");
+            }
+
+            newGame = confirm("Play again?"); // confirmation box asks to play again
+    
+            playerScore = 0; // resets scores to 0 on new game
+            compScore = 0;
+            draws = 0; 
+        }   
+        function getCompChoice() { // this function calculates the computer players choice
+
+            const choiceArr = ['rock', 'paper', 'scissors']; // array holds choices for the computer player
+            const randomNum = Math.floor(Math.random() * choiceArr.length); // sets range of random numbers to length of array
+            return choiceArr[randomNum]; // returns the array item at the randomly generated index 
+        } // end function getCompChoice
+    // end script    
+    </script>
+</body>
+</html>
